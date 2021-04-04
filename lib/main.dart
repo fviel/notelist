@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notelist/telas/notedetail.dart';
 import 'package:notelist/telas/notelist.dart';
 
 ///link do tutorial seguido:
@@ -17,7 +18,8 @@ class NotelistMain extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.red
       ),
-      home: NoteList(),
+      //home: NoteList(),
+      home: NoteDetail(),
     );
   }
 }

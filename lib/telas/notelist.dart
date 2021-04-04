@@ -50,15 +50,20 @@ class _NoteListState extends State<NoteList> {
     );
   }
 
+  //retorna o appBar da tela
+  AppBar getAppBar(){
+    return AppBar(
+      title: Text('Note List'),
+    );
+  }
 
+
+  //usando métodos separados, fica mais limpo o código da tela
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Note List'),
-      ),
+      appBar: getAppBar(),
       body: getNoteListView(),
-
       floatingActionButton: getFloatingButton(),
     );
   }
