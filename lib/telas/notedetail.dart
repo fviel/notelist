@@ -2,16 +2,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class NoteDetail extends StatefulWidget {
+  String tituloAppBar;
+  NoteDetail(this.tituloAppBar);
   @override
-  _NoteDetailState createState() => _NoteDetailState();
+  _NoteDetailState createState() => _NoteDetailState(this.tituloAppBar);
 }
 
 class _NoteDetailState extends State<NoteDetail> {
   int count = 0;
   final List<String> _prioridades = ['Alta', 'Média', 'Baixa'];
-
+  String tituloAppBar;
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+
+  ///contrutora com parms
+  _NoteDetailState(this.tituloAppBar);
 
   ///Método para retornar a lista de cards
   Padding getNoteListView() {
@@ -145,18 +150,41 @@ class _NoteDetailState extends State<NoteDetail> {
   }
 
   //retorna o appBar da tela
+  /// Totalmente desnecessário o iconButton, o appBar já faria o pop
+  /// automaticamente, mas fiz para poder brincar de retornar outros
+  /// itens da stack
   AppBar getAppBar() {
     return AppBar(
-      title: Text('Note List'),
+      title: Text(tituloAppBar),
+      leading: IconButton(
+        icon: Icon(
+          Icons.arrow_back,
+        ),
+        onPressed:() async{
+          await voltarParaAUltimaTela();
+        },
+      ),
     );
+  }
+
+  void voltarParaAUltimaTela() async{
+    await Navigator.pop(context);
   }
 
   //usando métodos separados, fica mais limpo o código do build
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: getAppBar(),
-      body: getNoteListView(),
+    return WillPopScope (
+      onWillPop: () async{
+        //caso eu queira fazer alguma ação no ato de voltar
+        // do usuário, posso fazer aqui
+        debugPrint('Usuário clicou no voltar');
+        await voltarParaAUltimaTela();
+      },
+      child: Scaffold(
+        appBar: getAppBar(),
+        body: getNoteListView(),
+      ),
     );
   }
 }

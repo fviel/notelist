@@ -18,8 +18,8 @@ class NotelistMain extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.red
       ),
-      //home: NoteList(),
-      home: NoteDetail(),
+      home: NoteList(),
+      //home: NoteDetail(),
     );
   }
 }
