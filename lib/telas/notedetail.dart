@@ -161,7 +161,7 @@ class _NoteDetailState extends State<NoteDetail> {
           Icons.arrow_back,
         ),
         onPressed:() async{
-          await voltarParaAUltimaTela();
+          voltarParaAUltimaTela();
         },
       ),
     );

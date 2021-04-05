@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:notelist/telas/notedetail.dart';
+import 'package:notelist/entities/note.dart';
+
 
 class NoteList extends StatefulWidget {
   @override

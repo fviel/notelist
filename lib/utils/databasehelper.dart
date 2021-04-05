@@ -116,7 +116,8 @@ class DatabaseHelper {
 //Delete
   Future<int> excluirNota(int id) async {
     Database db = await this.database;
-    var resultado = await db.delete(noteTable, where: '$colId = ?', whereArgs: [id]);
+    var resultado =
+        await db.delete(noteTable, where: '$colId = ?', whereArgs: [id]);
     //var resultado = await db.rawDelete('DELETE FROM $noteTable WHERE $colId = $id');
     return resultado;
   }
@@ -124,9 +125,11 @@ class DatabaseHelper {
 //Count
   Future<int> contarNotas() async {
     Database db = await this.database;
-    List<Map<String, dynamic>> contagem = await db.rawQuery('SELECT COUNT (*) FROM $noteTable');
+    List<Map<String, dynamic>> contagem =
+        await db.rawQuery('SELECT COUNT (*) FROM $noteTable');
     int resultado = Sqflite.firstIntValue(contagem);
     return resultado;
+  }
 }
 
 //Versão mais moderna de inicialização do db, usando path, não path_provider

@@ -25,8 +25,10 @@ class Note {
     }
   }
 
+  // ignore: unnecessary_getters_setters
   String get data => _data;
 
+  // ignore: unnecessary_getters_setters
   set data(String value) {
     _data = value;
   }
