@@ -27,6 +27,7 @@ dependencies:
   flutter_spinkit: ^5.0.0
   sqflite:
   path:
+  path_provider:
 
   #path permite navegar no sistema de arquivos do celular
   # The following adds the Cupertino Icons font to your application.
