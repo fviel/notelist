@@ -4,6 +4,10 @@ import 'package:notelist/entities/note.dart';
 import 'package:notelist/utils/databasehelper.dart';
 import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
+//TODO
+//1. Adicionar form
+//2. Validar campos com Valodator, por exemplo, não pode salvar uma nota se os valores forem vazior
+//3. trocar texfiel por textformfield e validar
 
 class NoteDetail extends StatefulWidget {
   //usa pra poder receber o título da appbar vindo da tela que fez o push
