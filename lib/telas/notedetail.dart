@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:notelist/entities/note.dart';
 import 'package:notelist/utils/databasehelper.dart';
+import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 
 class NoteDetail extends StatefulWidget {
@@ -143,6 +144,7 @@ class _NoteDetailState extends State<NoteDetail> {
                     onPressed: (){
                       setState(() {
                         debugPrint('Usuário clicou em salvar');
+                        _saveUpdate();
                       });
                     },
                   ),
@@ -294,6 +296,8 @@ class _NoteDetailState extends State<NoteDetail> {
   void _saveUpdate() async{
     voltarParaAUltimaTela();
 
+    //adiciona a data atomática
+    note.data = DateFormat.yMMMd().format(DateTime.now());
     int resultado;
     if(note.id != null){
       //UPDATE
@@ -327,5 +331,23 @@ class _NoteDetailState extends State<NoteDetail> {
     final snackBar = SnackBar(content: Text(mesg));
     //Scaffold.of(context).showSnackBar(snackbar); // deprecado!
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  void _excluir() async{
+    //se o usuário tentar excluir uma anotação nova (sem sentido) ele veio para esta tela pelo FAB
+    if(note.id == null){
+      _showAlertDialog('Status','Nenhuma anotação excluída');
+      return;
+    }else {
+      //usuário está tentando excluir uma anotação existente
+      int resultado = await dbHelper.excluirNota(note.id);
+      if (resultado != 0) {
+        //sucesso
+        _showAlertDialog('Status', 'Anotação excluída com sucesso');
+      } else {
+        //falha
+        _showAlertDialog('Status', 'Falha ao excluir anotação');
+      }
+    }
   }
 }
