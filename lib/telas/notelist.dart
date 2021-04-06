@@ -94,9 +94,13 @@ class _NoteListState extends State<NoteList> {
   }
 
   void navegarParaDetalhesCard(Note nota, String tituloAppBar) async {
-    await Navigator.push(context, MaterialPageRoute(builder: (context) {
+    //o bool resultado recebe o valor que foi passado no pop da tela de detalhes
+    bool resultado = await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return NoteDetail(nota, tituloAppBar);
     }));
+    if(resultado){
+      updateListView();
+    }
   }
 
   ///Retorna a cor a ser utilizada no card conforme a prioridade

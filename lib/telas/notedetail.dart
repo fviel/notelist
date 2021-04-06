@@ -156,6 +156,7 @@ class _NoteDetailState extends State<NoteDetail> {
                     onPressed: (){
                       setState(() {
                         debugPrint('Usuário clicou em excluir');
+                        _excluir();
                       });
                     },
                   ),
@@ -189,7 +190,7 @@ class _NoteDetailState extends State<NoteDetail> {
   }
 
   void voltarParaAUltimaTela() {
-    Navigator.pop(context);
+    Navigator.pop(context, true);
   }
 
   ///Retorna a cor a ser utilizada no card conforme a prioridade
@@ -334,6 +335,8 @@ class _NoteDetailState extends State<NoteDetail> {
   }
 
   void _excluir() async{
+    voltarParaAUltimaTela();
+
     //se o usuário tentar excluir uma anotação nova (sem sentido) ele veio para esta tela pelo FAB
     if(note.id == null){
       _showAlertDialog('Status','Nenhuma anotação excluída');
