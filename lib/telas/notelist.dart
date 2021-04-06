@@ -24,6 +24,8 @@ class _NoteListState extends State<NoteList> {
     //inicialização da list de notas
     if (noteList == null) {
       noteList = <Note>[];
+      //atualiza a lista de notas com o BD
+      updateListView();
     }
     return Scaffold(
       appBar: getAppBar(),
@@ -153,17 +155,39 @@ class _NoteListState extends State<NoteList> {
     return resposta;
   }
 
+  ///Excluir no BD a nota selecionada
   void _excluir(BuildContext context, Note note) async {
     int resultado = await dbHelper.excluirNota(note.id);
     if (resultado != 0) {
+      //exibe a mensagem
       _showSnackBar(context, 'Nota excluída com sucesso');
-      //TODO atualizar o listview
+      //Atualizar o listview com as notas
+      updateListView();
     }
   }
 
+  ///exibe a mensagem de delete na tela do usuário
   void _showSnackBar(BuildContext context, String mesg) {
     final snackBar = SnackBar(content: Text(mesg));
     //Scaffold.of(context).showSnackBar(snackbar); // deprecado!
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  ///Carrega toda a lista d enotas do BD
+  void updateListView() {
+    //inicializa o BD
+    final Future<Database> dbFuture = dbHelper.initializeDatabase();
+    dbFuture.then((database){
+      //após inicializado, obtém a lista de notas
+      Future<List<Note>> noteListFuture = dbHelper.getListaNotes();
+      //atualiza a tela atual, após carregar a lista de notas
+      noteListFuture.then((noteList) {
+        setState(() {
+          this.noteList = noteList;
+          this.count = noteList.length;
+        });
+      });
+
+    });
   }
 }
