@@ -1,15 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:notelist/entities/note.dart';
+import 'package:notelist/utils/databasehelper.dart';
+import 'package:sqflite/sqflite.dart';
 
 class NoteDetail extends StatefulWidget {
-  String tituloAppBar;
+  //usa pra poder receber o título da appbar vindo da tela que fez o push
+  final String tituloAppBar;
+
+
+
   NoteDetail(this.tituloAppBar);
   @override
   _NoteDetailState createState() => _NoteDetailState(this.tituloAppBar);
 }
 
 class _NoteDetailState extends State<NoteDetail> {
-  int count = 0;
+  //helper do db para chamar o métodos
+  final DatabaseHelper dbHelper = DatabaseHelper();
+
   final List<String> _prioridades = ['Alta', 'Média', 'Baixa'];
   String tituloAppBar;
   TextEditingController titleController = TextEditingController();
@@ -17,6 +26,26 @@ class _NoteDetailState extends State<NoteDetail> {
 
   ///contrutora com parms
   _NoteDetailState(this.tituloAppBar);
+
+  //Método Build() usando métodos separados, fica mais limpo o código
+  @override
+  Widget build(BuildContext context) {
+
+    return WillPopScope (
+      onWillPop: () {
+        //caso eu queira fazer alguma ação no ato de voltar
+        // do usuário, posso fazer aqui
+        debugPrint('Usuário clicou no voltar');
+        voltarParaAUltimaTela();
+      },
+      child: Scaffold(
+        appBar: getAppBar(),
+        body: getNoteListView(),
+      ),
+    );
+  }
+
+  ///-----------------------
 
   ///Método para retornar a lista de cards
   Padding getNoteListView() {
@@ -167,24 +196,72 @@ class _NoteDetailState extends State<NoteDetail> {
     );
   }
 
-  void voltarParaAUltimaTela() async{
-    await Navigator.pop(context);
+  void voltarParaAUltimaTela() {
+    Navigator.pop(context);
   }
 
-  //usando métodos separados, fica mais limpo o código do build
-  @override
-  Widget build(BuildContext context) {
-    return WillPopScope (
-      onWillPop: () async{
-        //caso eu queira fazer alguma ação no ato de voltar
-        // do usuário, posso fazer aqui
-        debugPrint('Usuário clicou no voltar');
-        await voltarParaAUltimaTela();
-      },
-      child: Scaffold(
-        appBar: getAppBar(),
-        body: getNoteListView(),
-      ),
-    );
+  ///Retorna a cor a ser utilizada no card conforme a prioridade
+  Color getCorPrioridade(int prioridade){
+    Color resposta;
+    switch(prioridade){
+      case 1: {
+      resposta = Colors.red;
+      break;
+    }
+      case 2: {
+        resposta = Colors.yellow;
+        break;
+      }
+      case 3: {
+        resposta = Colors.green;
+        break;
+      }
+      default:{
+        resposta = Colors.green;
+        break;
+      }
+    }
+    return resposta;
   }
+
+  ///Retorna a cor a ser utilizada no card conforme a prioridade
+  Icon getIconePrioridade(int prioridade){
+    Icon resposta;
+    switch(prioridade){
+      case 1: {
+        resposta = Icon(Icons.looks_one);
+        break;
+      }
+      case 2: {
+        resposta = Icon(Icons.looks_two);
+        break;
+      }
+      case 3: {
+        resposta = Icon(Icons.looks_3);
+        break;
+      }
+      default:{
+        resposta = Icon(Icons.looks_3);
+        break;
+      }
+    }
+    return resposta;
+  }
+
+  void _excluir(BuildContext contex, Note note) async{
+    int resultado = await dbHelper.excluirNota(note.id);
+    if(resultado != 0 ){
+      _showSnackBar(context, 'Nota excluída com sucesso');
+      //TODO atualizar o listview
+    }
+  }
+
+  void _showSnackBar(BuildContext context, String mesg){
+    final snackBar = SnackBar(content: Text(mesg));
+    //Scaffold.of(context).showSnackBar(snackbar); // deprecado!
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+
+
 }

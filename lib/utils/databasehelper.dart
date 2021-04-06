@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
+//import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:io';
-import 'package:path/path.dart';
+//import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:notelist/entities/note.dart';
@@ -74,9 +74,9 @@ class DatabaseHelper {
 //Bloco de métodos para realizar operações no BD
 //-----------------------------------------------------------
 
+
 //Fetch - Obtem todos os elementos da tabela, ou seja, um list de Map's
-  Future<List<Map<String, dynamic>>>
-      listarTodasNotasOrdenandoPorPrioridade() async {
+  Future<List<Map<String, dynamic>>> listarTodasNotasOrdenandoPorPrioridade() async {
     Database db = await this.database;
 
     ///Há duas formas de rodar as queries no sqflite, raw comando ou por métodos, passando parms, exemplos:
@@ -96,6 +96,16 @@ class DatabaseHelper {
     var resultadoForma2 =
         await db.query(noteTable, orderBy: '$colPrioridade ASC');
     return resultadoForma2;
+  }
+
+  Future<List<Note>> getListaNotes() async{
+    var noteMapList = await listarTodasNotasOrdenandoPorPrioridade();
+    int count = noteMapList.length;
+    List<Note> noteList= <Note>[];
+    for(int i = 0; i < count; i++){
+      noteList.add(Note.fromMapObject(noteMapList[i]));
+    }
+    return noteList;
   }
 
 //Insert
