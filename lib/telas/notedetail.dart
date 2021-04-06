@@ -7,12 +7,13 @@ import 'package:sqflite/sqflite.dart';
 class NoteDetail extends StatefulWidget {
   //usa pra poder receber o título da appbar vindo da tela que fez o push
   final String tituloAppBar;
+  final Note note;
 
 
 
-  NoteDetail(this.tituloAppBar);
+  NoteDetail(this.note, this.tituloAppBar);
   @override
-  _NoteDetailState createState() => _NoteDetailState(this.tituloAppBar);
+  _NoteDetailState createState() => _NoteDetailState(this.note, this.tituloAppBar);
 }
 
 class _NoteDetailState extends State<NoteDetail> {
@@ -21,15 +22,22 @@ class _NoteDetailState extends State<NoteDetail> {
 
   final List<String> _prioridades = ['Alta', 'Média', 'Baixa'];
   String tituloAppBar;
+  Note note;
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
   ///contrutora com parms
-  _NoteDetailState(this.tituloAppBar);
+  _NoteDetailState(this.note, this.tituloAppBar);
 
   //Método Build() usando métodos separados, fica mais limpo o código
   @override
   Widget build(BuildContext context) {
+    //define um estilo de texto
+    TextStyle textStyle = Theme.of(context).textTheme.subtitle1;
+
+    //atualiza minhas controllers com os dados recebidos da telas de listar
+    titleController.text = note.titulo;
+    descriptionController.text = note.descricao;
 
     return WillPopScope (
       onWillPop: () {
@@ -73,10 +81,11 @@ class _NoteDetailState extends State<NoteDetail> {
             }).toList(),
             style: textStyle,
             //valor default
-            value: 'Baixa',
-            onChanged: (valorSelecionado) {
+            value: getPrioridadeComoString(note.prioridade),
+            onChanged: (valorSelecionadoPeloUsuario) {
               setState(() {
-                debugPrint('Valor selecionado no dropdown: $valorSelecionado');
+                debugPrint('Valor selecionado no dropdown: $valorSelecionadoPeloUsuario');
+                updatePrioridadeComoInt(valorSelecionadoPeloUsuario);
               });
             },
           )
@@ -98,6 +107,7 @@ class _NoteDetailState extends State<NoteDetail> {
               style: textStyle,
               onChanged: (valor){
                 debugPrint('Alterado o título para: $valor');
+                updateTitulo();
               },
             ),
           ),
@@ -117,6 +127,8 @@ class _NoteDetailState extends State<NoteDetail> {
               style: textStyle,
               onChanged: (valor){
                 debugPrint('Alterada a descrição para: $valor');
+                //como estou usando a controller, não preciso passar o valor pra função
+                updateDescricao();
               },
             ),
           ),
@@ -154,28 +166,6 @@ class _NoteDetailState extends State<NoteDetail> {
         ],
       ),
     );
-
-    //   return ListView.builder(
-    //       itemCount:count,
-    //       itemBuilder:(BuildContext context, int position){
-    //         return Card(
-    //             color: Colors.white,
-    //             elevation: 2.0,
-    //             child:ListTile(
-    //                 leading: CircleAvatar(
-    //                   backgroundColor: Colors.yellow,
-    //                   child:Icon(Icons.keyboard_arrow_right),
-    //                 ),
-    //                 title: Text('Teste/Exemplo título', style: textStyle),
-    //                 subtitle: Text('teste também'),
-    //                 trailing: Icon(Icons.delete,color: Colors.grey),
-    //                 onTap:(){
-    //                   debugPrint('clicou no card');
-    //                 }
-    //             )
-    //         );
-    //       }
-    //   );
   }
 
   //retorna o appBar da tela
@@ -248,12 +238,89 @@ class _NoteDetailState extends State<NoteDetail> {
     return resposta;
   }
 
-  void _excluir(BuildContext contex, Note note) async{
-    int resultado = await dbHelper.excluirNota(note.id);
-    if(resultado != 0 ){
-      _showSnackBar(context, 'Nota excluída com sucesso');
-      //TODO atualizar o listview
+  void updatePrioridadeComoInt(String prioridade){
+    int resposta;
+    switch(prioridade){
+      case 'Alta': {
+        note.prioridade = 1;
+        break;
+      }
+      case 'Média': {
+        note.prioridade = 2;
+        break;
+      }
+      case 'Baixa': {
+        note.prioridade = 3;
+        break;
+      }
+      default:{
+        note.prioridade = 3;
+        break;
+      }
     }
+  }
+
+  String getPrioridadeComoString(int prioridade){
+    String resposta;
+    switch(prioridade){
+      case 1: {
+        resposta = _prioridades[0];
+        break;
+      }
+      case 2: {
+        resposta = _prioridades[1];
+        break;
+      }
+      case 3: {
+        resposta = _prioridades[2];
+        break;
+      }
+      default:{
+        resposta = _prioridades[2];
+        break;
+      }
+    }
+    return resposta;
+  }
+
+  void updateTitulo(){
+    note.titulo = titleController.text;
+  }
+
+  void updateDescricao(){
+    note.descricao = descriptionController.text;
+  }
+
+  void _saveUpdate() async{
+    voltarParaAUltimaTela();
+
+    int resultado;
+    if(note.id != null){
+      //UPDATE
+      resultado = await dbHelper.atualizarNota(note);
+    }else{
+      //INSERT
+      resultado = await dbHelper.adicionarNota(note);
+    }
+
+    if(resultado!=0){
+      //sucesso
+      _showAlertDialog('Status','Anotação salva com sucesso');
+    }else{
+      //falha
+      _showAlertDialog('Status','Falha ao salvar anotação');
+    }
+  }
+
+  void _showAlertDialog(String titulo, String conteudo){
+    AlertDialog alertDialog = AlertDialog(
+      title: Text(titulo),
+      content: Text(conteudo),
+    );
+    showDialog(
+      context: context,
+      builder: (_) =>alertDialog,
+    );
   }
 
   void _showSnackBar(BuildContext context, String mesg){
@@ -261,7 +328,4 @@ class _NoteDetailState extends State<NoteDetail> {
     //Scaffold.of(context).showSnackBar(snackbar); // deprecado!
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
-
-
-
 }

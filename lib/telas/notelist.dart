@@ -64,7 +64,7 @@ class _NoteListState extends State<NoteList> {
                 ),
                 onTap: () {
                   debugPrint('clicou no card');
-                  navegarParaDetalhesCard('Editar a anotação');
+                  navegarParaDetalhesCard(this.noteList[position],'Editar a anotação');
                 },
               ));
         });
@@ -78,7 +78,7 @@ class _NoteListState extends State<NoteList> {
           // await Navigator.push(context, MaterialPageRoute(builder: (context) {
           //   return NoteDetail();
           // }));
-          navegarParaDetalhesCard('Nova anotação');
+          navegarParaDetalhesCard(Note('','', '',3),'Nova anotação');
         },
         tooltip: 'Adicionar nota',
         child: Icon(
@@ -93,9 +93,9 @@ class _NoteListState extends State<NoteList> {
     );
   }
 
-  void navegarParaDetalhesCard(String tituloAppBar) async {
+  void navegarParaDetalhesCard(Note nota, String tituloAppBar) async {
     await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return NoteDetail(tituloAppBar);
+      return NoteDetail(nota, tituloAppBar);
     }));
   }
 
