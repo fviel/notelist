@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:notelist/telas/notedetail.dart';
 import 'package:notelist/telas/notelist.dart';
+import 'package:flutter/services.dart';
 
 ///link do tutorial seguido:
 ///https://www.youtube.com/watch?v=wVSBUnNUr00&list=PLDQl6gZtjvFu5l20K5KTEBLCjfRjHowLj&index=2
+///
+/// Modo portrait
+/// https://greymag.medium.com/flutter-orientation-lock-portrait-only-c98910ebd769
 
 void main() {
-  runApp(NotelistMain());
+  // We need to call it manually,
+  // because we going to call setPreferredOrientations()
+  // before the runApp() call
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // fixa a orientação do app para retrato, para isso precisei importat o services
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((value) => runApp(NotelistMain()));
 }
 
 class NotelistMain extends StatelessWidget {

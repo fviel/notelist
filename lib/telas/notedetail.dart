@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:notelist/entities/note.dart';
 import 'package:notelist/utils/databasehelper.dart';
 import 'package:intl/intl.dart';
-import 'package:sqflite/sqflite.dart';
 
 class NoteDetail extends StatefulWidget {
   //usa pra poder receber o título da appbar vindo da tela que fez o push
@@ -35,8 +34,6 @@ class _NoteDetailState extends State<NoteDetail> {
   //Método Build() usando métodos separados, fica mais limpo o código
   @override
   Widget build(BuildContext context) {
-    //define um estilo de texto
-    TextStyle textStyle = Theme.of(context).textTheme.subtitle1;
 
     //atualiza minhas controllers com os dados recebidos da telas de listar
     titleController.text = note.titulo;
@@ -260,7 +257,6 @@ class _NoteDetailState extends State<NoteDetail> {
   }
 
   void updatePrioridadeComoInt(String prioridade) {
-    int resposta;
     switch (prioridade) {
       case 'Alta':
         {
@@ -364,11 +360,11 @@ class _NoteDetailState extends State<NoteDetail> {
     );
   }
 
-  void _showSnackBar(BuildContext context, String mesg) {
-    final snackBar = SnackBar(content: Text(mesg));
-    //Scaffold.of(context).showSnackBar(snackbar); // deprecado!
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
+  // void _showSnackBar(BuildContext context, String mesg) {
+  //   final snackBar = SnackBar(content: Text(mesg));
+  //   //Scaffold.of(context).showSnackBar(snackbar); // deprecado!
+  //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  // }
 
   void _excluir() async {
     voltarParaAUltimaTela();
