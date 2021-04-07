@@ -7,6 +7,23 @@ import 'package:flutter/services.dart';
 ///
 /// Modo portrait
 /// https://greymag.medium.com/flutter-orientation-lock-portrait-only-c98910ebd769
+///
+/// For apk (Android) you need to run the command :
+//
+// flutter build apk --release
+// If you want to split the apks per abi (Split Apk) then run
+//
+// flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abc
+// For ipa (iOS) you need to run the command :
+//
+// flutter build ios --release
+// From the console
+//
+// P.S. --release is optional as it is by default if you need debug build, just replace --release with --debug
+//
+// you can find the released APK or IPA files form
+//
+// build/app/outputs/flutter-apk/app-release.apk
 
 void main() {
   // We need to call it manually,
