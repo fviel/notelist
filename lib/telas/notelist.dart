@@ -114,7 +114,7 @@ class _NoteListState extends State<NoteList> {
         }
       case 2:
         {
-          resposta = Colors.yellow;
+          resposta = Colors.orange;
           break;
         }
       case 3:
@@ -137,17 +137,20 @@ class _NoteListState extends State<NoteList> {
     switch (prioridade) {
       case 1:
         {
-          resposta = Icon(Icons.looks_one);
+          resposta = Icon(Icons.looks_one,
+          color:Colors.red[100]);
           break;
         }
       case 2:
         {
-          resposta = Icon(Icons.looks_two);
+          resposta = Icon(Icons.looks_two,
+              color:Colors.yellow);
           break;
         }
       case 3:
         {
-          resposta = Icon(Icons.looks_3);
+          resposta = Icon(Icons.looks_3,
+              color:Colors.green[100]);
           break;
         }
       default:
